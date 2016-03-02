@@ -6,8 +6,7 @@
 # check all calcdia.log files exist, and that they are complete, i.e.,
 # tform has printed final timings. This line contains "sec out of".
 
-#for reac in qaqa qjqj gaga gjgj haha hjhj
-for reac in gaga gjgj
+for reac in qaqa qjqj gaga gjgj haha hjhj
 do
         for a in runfiles/$reac/$1/dia-*
         do

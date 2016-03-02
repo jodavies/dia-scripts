@@ -1,0 +1,4 @@
+input "SETMEDBNAMEres.dat"
+sum 5 "SETMEDBNAMEres.dat" 
+sum 1 "SETMEDBNAMEres.dat" 
+end

@@ -8,44 +8,47 @@
 
 ###############################################################################
 
-export FORMPROCESSORS=16
-export MINOSPROCESSORS=1
 
 # SGE
 #$ -pe smp 16
 #$ -l h_vmem=4000M
 #$ -l h_rt=72:00:00
 #$ -cwd -V
-#$ -e runfiles/SETMEREAC/SETMEMOM/
-#$ -o runfiles/SETMEREAC/SETMEMOM/
-#$ -N SETMEREACSETMEMOM
 #$ -m ae
 #$ -M user@host
 # blacklist a node?
 # #$ -l h=!comp1
+#$ -e runfiles/SETMEREAC/SETMEMOM/
+#$ -o runfiles/SETMEREAC/SETMEMOM/
+#$ -N SETMEREACSETMEMOM
 
 #PBS -l nodes=1:ppn=16
 #PBS -l walltime=72:00:00
 #PBS -V
+#PBS -m ae
+#PBS -M user@host
 #PBS -e runfiles/SETMEREAC/SETMEMOM/
 #PBS -o runfiles/SETMEREAC/SETMEMOM/
 #PBS -N SETMEREACSETMEMOM
-#PBS -m ae
-#PBS -M user@host
 
-if [ -e pbs_server ];
+if [ -n "$SGE_ROOT" ];
 then
+	TASKNUMBER=$SGE_TASK_ID
+	echo Using SGE
+	echo JobID: $JOB_NAME $TASKNUMBER
+else
 	cd $PBS_O_WORKDIR
 	TASKNUMBER=$PBS_ARRAYID
-else
-	TASKNUMBER=$SGE_TASK_ID
+	echo Using PBS
+	echo JobID: $PBS_JOBNAME $TASKNUMBER
 fi
 
+export FORMPROCESSORS=16
+export MINOSPROCESSORS=1
 ################################################################################
 
 trap "echo error! Job terminating early: `date`" SIGINT SIGTERM SIGKILL
 
-echo JobID: $JOB_NAME $TASKNUMBER
 echo Running on host: $HOSTNAME
 echo --- computing diagrams SETMEREAC $TASKNUMBER to $TASKNUMBER at N=SETMEMOM
 

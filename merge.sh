@@ -19,8 +19,5 @@ do
 	minosmerge runfiles/$1/$2/dia-1/$1Lnfres.dat $a/$1Lnfres.dat runfiles/$1/$2/dia-1/$1Lnfres.dat
 done
 
-# set routines dir
-export FORMPATH=/home/jodavies/work/0-compute/routines
-
 cd runfiles/$1/$2/dia-1
 minos makesum

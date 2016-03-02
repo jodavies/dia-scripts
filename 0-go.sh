@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# create job files (using control.sh), and submit array jobs
+# create job files (using create.sh), and submit array jobs
 
-./control.sh CREATE qaqa $1 1 6
-./control.sh CREATE qjqj $1 1 6
-./control.sh CREATE gaga $1 1 36
-./control.sh CREATE gjgj $1 1 70
-./control.sh CREATE haha $1 1 8
-./control.sh CREATE hjhj $1 1 6
+./create.sh qaqa $1 6 qaqaMLnf
+./create.sh qjqj $1 6 qjqjMLnf
+./create.sh gaga $1 36 gagaMLnf
+./create.sh gjgj $1 70 gjgjMLnf
+./create.sh haha $1 8 hahaMLnf
+./create.sh hjhj $1 6 hjhjMLnf
 
 # submit as array-job
 qsub -t 1-6 runfiles/qaqa/$1/submit-array
