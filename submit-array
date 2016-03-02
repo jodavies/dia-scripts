@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# Submit diagram calculations, using minos and form, to a cluster with
+# one diagram per sge/pbs task.
+# The following environment variables should be exported in env:
+# -   FORMTMPROOT: base dir for scratch files. Folders created in here
+# -   FORMPATH: directory containing procedures used by calcdia.frm etc
+
+###############################################################################
+
+export FORMPROCESSORS=16
+export MINOSPROCESSORS=1
+
+# SGE
+#$ -pe smp 16
+#$ -l h_vmem=4000M
+#$ -l h_rt=72:00:00
+#$ -cwd -V
+#$ -e runfiles/SETMEREAC/SETMEMOM/
+#$ -o runfiles/SETMEREAC/SETMEMOM/
+#$ -N SETMEREACSETMEMOM
+#$ -m ae
+#$ -M user@host
+# blacklist a node?
+# #$ -l h=!comp1
+
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=72:00:00
+#PBS -V
+#PBS -e runfiles/SETMEREAC/SETMEMOM/
+#PBS -o runfiles/SETMEREAC/SETMEMOM/
+#PBS -N SETMEREACSETMEMOM
+#PBS -m ae
+#PBS -M user@host
+
+if [ -e pbs_server ];
+then
+	cd $PBS_O_WORKDIR
+	TASKNUMBER=$PBS_ARRAYID
+else
+	TASKNUMBER=$SGE_TASK_ID
+fi
+
+################################################################################
+
+trap "echo error! Job terminating early: `date`" SIGINT SIGTERM SIGKILL
+
+echo JobID: $JOB_NAME $TASKNUMBER
+echo Running on host: $HOSTNAME
+echo --- computing diagrams SETMEREAC $TASKNUMBER to $TASKNUMBER at N=SETMEMOM
+
+SCRATCHDIR=$FORMTMPROOT/SETMEREAC/SETMEMOM/dia-$TASKNUMBER
+
+# set up scratch space
+mkdir -p $SCRATCHDIR
+if [ ! -d $SCRATCHDIR ]
+then
+	echo Error, could not create scratch directory $SCRATCHDIR
+	exit
+fi
+export FORMTMP=$SCRATCHDIR
+
+# Set lustre striping if appropriate
+if [ "$(df -T $SCRATCHDIR | grep -c lustre)" -eq 1 ]
+then
+	echo --- lustre scratch dir $SCRATCHDIR
+	echo --- setting striping...
+	lfs setstripe -c -1 $SCRATCHDIR
+else
+	echo --- with scratch dir $FORMTMP
+fi
+
+echo STARTTIME `date`
+STARTSTAMP=`date +"%s"`
+
+#################################################################################
+
+# cd into working dir. submit scripts queued from above
+cd runfiles/SETMEREAC/SETMEMOM/dia-$TASKNUMBER
+
+# Start diagram calculation. Correct diagram range for minos
+# has been set by script which creates the runfiles, ie, it fills
+# in SETMEMOM, $TASKNUMBER, $TASKNUMBER
+minos makeres
+
+# remove scratch space - KEEP FILES ON CRASH FOR DEBUGGING PURPOSES.
+#                        A CLEAN EXIT WILL LEAVE JUST AN EMPTY FOLDER.
+#rm -r $SCRATCHDIR
+
+# print run times
+echo ENDTIME `date`
+ENDSTAMP=`date +"%s"`
+echo RUNTIME: $(($ENDSTAMP-$STARTSTAMP))
+
+
