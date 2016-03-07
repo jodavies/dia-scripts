@@ -1,0 +1,6 @@
+input "db/SETMEDBNAMEdia.dat"
+output "SETMEDBNAMEres.dat"
+make 0 "db/SETMEDBNAMEdia.dat" "SETMEDBNAMEres.dat" (VALUE) [SETMEDIA-SETMEFINALDIA]
+sum 5 "SETMEDBNAMEres.dat" 
+sum 1 "SETMEDBNAMEres.dat" 
+end
