@@ -58,6 +58,11 @@ mkdir -p runfiles/$REACTION/$MELMOM
 cp submit-array runfiles/$REACTION/$MELMOM
 sed -i -e "s/SETMEREAC/$REACTION/g" runfiles/$REACTION/$MELMOM/submit-array
 sed -i -e "s/SETMEMOM/$MELMOM/g" runfiles/$REACTION/$MELMOM/submit-array
+# make a script to run the whole job on a single machine, with no queue submission
+cp local-run-all.sh runfiles/$REACTION/$MELMOM
+sed -i -e "s/SETMEREAC/$REACTION/g" runfiles/$REACTION/$MELMOM/local-run-all.sh
+sed -i -e "s/SETMEMOM/$MELMOM/g" runfiles/$REACTION/$MELMOM/local-run-all.sh
+chmod +x runfiles/$REACTION/$MELMOM/local-run-all.sh
 
 
 
@@ -71,6 +76,9 @@ do
 #
 	sed -i -e "s/SETMEDIA/$DIA/g" runfiles/$REACTION/$MELMOM/dia-$DIA/makeres
 	sed -i -e "s/SETMEDBNAME/$DBNAME/g" runfiles/$REACTION/$MELMOM/dia-$DIA/makeres
+	sed -i -e "s/SETMEDIA/$DIA/g" runfiles/$REACTION/$MELMOM/dia-$DIA/makeres-runall
+	sed -i -e "s/SETMEFINALDIA/$NDIAGRAMS/g" runfiles/$REACTION/$MELMOM/dia-$DIA/makeres-runall
+	sed -i -e "s/SETMEDBNAME/$DBNAME/g" runfiles/$REACTION/$MELMOM/dia-$DIA/makeres-runall
 #
 	sed -i -e "s/SETMEDBNAME/$DBNAME/g" runfiles/$REACTION/$MELMOM/dia-$DIA/makesum
 done
