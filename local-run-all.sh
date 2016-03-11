@@ -35,6 +35,8 @@ STARTSTAMP=`date +"%s"`
 # cd into working dir. submit scripts queued from above
 cd runfiles/SETMEREAC/SETMEMOM/dia-1
 
+while true; do du -s $FORMTMP >> diskuse.log; sleep 20; done &
+
 # Start diagram calculation. Correct diagram range for minos
 # has been set by script which creates the runfiles, ie, it fills
 # in SETMEMOM, $TASKNUMBER, $TASKNUMBER
@@ -43,6 +45,8 @@ minos makeres-runall
 # remove scratch space - KEEP FILES ON CRASH FOR DEBUGGING PURPOSES.
 #                        A CLEAN EXIT WILL LEAVE JUST AN EMPTY FOLDER.
 #rm -r $SCRATCHDIR
+
+kill $!
 
 # print run times
 echo ENDTIME `date`

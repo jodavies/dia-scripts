@@ -5,9 +5,6 @@
 
 # We merge into the database in dia-1.
 
-# Create backup of moment folder
-cp -r runfiles/$1/$2 runfiles/$1/$2-premerge
-
 for a in runfiles/$1/$2/dia-*;
 do
 #	skip dia-1
